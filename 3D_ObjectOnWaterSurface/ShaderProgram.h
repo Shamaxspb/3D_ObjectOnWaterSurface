@@ -32,7 +32,7 @@ public:
 		{
 			// open shader  files
 			vShaderFile.open(vertexPath);
-			vShaderFile.open(fragmentPath);
+			fShaderFile.open(fragmentPath);
 			std::stringstream vShaderStream, fShaderStream;
 
 			// read file's buffer content to streams

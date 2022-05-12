@@ -20,8 +20,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void drawPolgyon();
 
-const int START_WINDOW_WIDTH = 400;
-const int START_WINDOW_HEIGHT = 300;
+const int START_WINDOW_WIDTH = 1366;
+const int START_WINDOW_HEIGHT = 768;
 
 class Polygon // polygon
 {
@@ -197,24 +197,7 @@ int main()
 	Polygon plg(pointA, pointB, pointC, pointD);
 	plg.PolygonVerticesInfo();*/
 
-	Shader myShader("myVertexShader.vs","myFragmentShader.fs");
-
-	float testSquareVertices[] = {
-		// position			// indicies of vertices
-		-0.5f,  0.5f, 0.0f,	// A - 0
-		-0.5f, -0.5f, 0.0f,	// B - 1
-		 0.0f,  0.5f, 0.0f, // C - 2
-		 0.0f, -0.5f, 0.0f,	// D - 3
-		 0.5f,  0.5f, 0.0f, // E - 4
-		 0.5f, -0.5f, 0.0f	// F - 5
-	};
-
-	float testSquareIndicies[] = {
-		0, 1, 3,	// triangle ABD
-		0, 3, 2,	// triangle ADC
-		2, 3, 5,	// triangle CDF
-		2, 5, 4		// triangle CFE
-	};
+	
 
 	// TEST FIELD -----------------------------------------------------------------------------------------------------
 
@@ -233,28 +216,119 @@ int main()
 		5, 2, 3
 	};
 
+	Shader myShader("myVertexShader.vs", "myFragmentShader.fs");
+
+	//float testSquareVertices[] = {
+	//	// position			// color			// indicies of vertices
+	//	-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,	// A - 0
+	//	-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,	// B - 1
+	//	 0.0f,  0.5f, 0.0f,	0.0f, 0.0f, 1.0f,	// C - 2
+	//	 0.0f, -0.5f, 0.0f,	1.0f, 1.0f, 0.0f,	// D - 3
+	//	 0.5f,  0.5f, 0.0f,	0.0f, 1.0f, 1.0f,	// E - 4
+	//	 0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 1.0f	// F - 5
+	//};
+
+	float testSquareVertices[] = {
+		// position			// indicies of vertices
+		-0.5f,  0.5f, 0.0f,	// A - 0 
+		-0.5f, -0.5f, 0.0f,	// B - 1
+		 0.0f,  0.5f, 0.0f, // C - 2
+		 0.0f, -0.5f, 0.0f,	// D - 3
+		 0.5f,  0.5f, 0.0f, // E - 4
+		 0.5f, -0.5f, 0.0f	// F - 5
+	};
+
+	unsigned int testSquareIndicies[] = {
+		0, 1, 3,	// triangle ABD
+		0, 3, 2,	// triangle ADC
+		2, 3, 5,	// triangle CDF
+		2, 5, 4		// triangle CFE
+	};
+
+	float test2SquareVertices[] = {
+		// position			// indicies of vertices
+		-1.0f,  0.6f, 0.0f,	// A - 0 
+		-1.0f, -0.6f, 0.0f,	// B - 1
+		-0.8f,  0.6f, 0.0f,	// C - 2
+		-0.8f, -0.6f, 0.0f,	// D - 3
+		-0.6f,  0.6f, 0.0f,	// E - 4
+		-0.6f, -0.6f, 0.0f,	// F - 5
+		-0.4f,  0.6f, 0.0f,	// G - 6
+		-0.4f, -0.6f, 0.0f,	// H - 7
+		-0.2f,  0.6f, 0.0f,	// I - 8
+		-0.2f, -0.6f, 0.0f,	// J - 9
+		 0.0f,  0.6f, 0.0f,	// K - 10
+		 0.0f, -0.6f, 0.0f,	// L - 11
+		 0.2f,  0.6f, 0.0f,	// M - 12
+		 0.2f, -0.6f, 0.0f,	// N - 13
+		 0.4f,  0.6f, 0.0f,	// O - 14
+		 0.4f, -0.6f, 0.0f,	// P - 15
+		 0.6f,  0.6f, 0.0f,	// Q - 16
+		 0.6f, -0.6f, 0.0f,	// R - 17
+		 0.8f,  0.6f, 0.0f,	// S - 18
+		 0.8f, -0.6f, 0.0f,	// T - 19
+		 1.0f,  0.6f, 0.0f,	// U - 20
+		 1.0f, -0.6f, 0.0f,	// V - 21
+	};
+
+	unsigned int test2SquareIndicies[] = {
+		0, 1, 3,	// triangle ABD
+		0, 3, 2,	// triangle ADC
+		2, 3, 5,	// triangle CDF
+		2, 5, 4,	// triangle CFE
+		4, 5, 7,	// triangle EFH
+		4, 7, 6,	// triangle EHG
+		6, 7, 9,	// triangle GHJ
+		6, 9, 8,	// triangle GJI
+		8, 9, 11,	// triangle IJL
+		8, 11, 10,	// triangle ILK
+		10, 11, 13,	// triangle KLN
+		10, 13, 12,	// triangle KNM
+		12, 13, 15,	// triangle MNP
+		12, 15, 14,	// triangle MPO
+		14, 15, 17,	// triangle OPR
+		14, 17, 16,	// triangle ORQ
+		16, 17, 19,	// triangle QRT
+		16, 19, 18,	// triangle QTS
+		18, 19, 21,	// triangle STV
+		18, 21, 20	// triangle SVU
+	};
 	
 	unsigned int VAO, VBO, EBO;
 
 	// create and bind VAO
-	glGenVertexArrays(1, &VAO); 
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	
 	glBindVertexArray(VAO);
 
-	// only 1 attribute pointer since we only have position (no color, no texture)
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// allocate memory in GPU and copy there data from testSquareVertices array
-	glBufferData(GL_ARRAY_BUFFER, sizeof(testSquareVertices), testSquareVertices, GL_STATIC_DRAW);
+	 //allocate memory in GPU and copy there data from testSquareVertices array
+	glBufferData(GL_ARRAY_BUFFER, sizeof(test2SquareVertices), test2SquareVertices, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &EBO);
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// allocate memory in GPU and copy there data from testSquareIndicies array
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(testSquareIndicies), testSquareIndicies, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(test2SquareIndicies), test2SquareIndicies, GL_STATIC_DRAW);
+
+	// finding attribs
+	/*unsigned int posAttrib = glGetAttribLocation(static Shader::ID, "vertexPosition");
+	unsigned int colAttrib = glGetAttribLocation(Shader::ID, "vertexColor");*/
+
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// color attribute
+	/*glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);*/
 	
-	myShader.Use();
+	
+	// uncomment this call to draw in wireframe polygons.
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//myShader.Use();
 
 	// render loop ==========================================================================================
 	while (!glfwWindowShouldClose(window))
@@ -262,14 +336,16 @@ int main()
 		// input
 		processInput(window);
 
-		//glClearColor(0.63f, 0.46f, 0.84f, 1.0f);
-		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		glClearColor(0.63f, 0.46f, 0.84f, 1.0f);
+		//glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// render
 		myShader.Use();
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0); // for 4 triangles
+		glDrawElements(GL_TRIANGLES, 60, GL_UNSIGNED_INT, 0); // for 4 triangles
+		glBindVertexArray(0);
 
 		// swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
