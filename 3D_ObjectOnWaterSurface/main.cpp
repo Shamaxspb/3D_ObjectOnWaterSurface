@@ -93,7 +93,7 @@ int main()
 	float& z1 = z, & z2 = z;
 	fstream waveFile;
 
-	waveFile.open("D:/Programming/Projects/Diploma/3D_ObjectOnWaterSurface/3D_ObjectOnWaterSurface/WaveHeight.txt", fstream::in);
+	waveFile.open("WaveHeight.txt", fstream::in);
 	if (!waveFile.is_open())
 	{
 		cout << "ERROR\tcouldn't open WaveHeight.txt" << endl;
