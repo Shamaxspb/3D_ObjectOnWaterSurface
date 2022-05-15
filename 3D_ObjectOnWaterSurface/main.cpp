@@ -3,7 +3,6 @@
 
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
 
 #include<ShaderProgram.h>
 
@@ -19,37 +18,84 @@ using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
-template <typename T>
-void PrintVector(const vector<T>& vec)
-{
-	for (const auto var : vec)
-	{
-		cout << var << endl;
-	}
-}
+void drawPolgyon();
 
 const int START_WINDOW_WIDTH = 1366;
 const int START_WINDOW_HEIGHT = 768;
 
-class Vector3d
+class Polygon // polygon
 {
-private:
-	float x;
-	float y;
-	float z;
-
 public:
-	Vector3d(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
-	float GetX() { return x; }
-	float GetY() { return y; }
-	float GetZ() { return z; }
-};
+	Polygon()
+	{
 
+	}
+
+	class Point
+	{
+	public:
+		Point() {}
+		Point(float coordX, float coordY, float coordZ) //constructor
+		{
+			this->coordX = coordX;
+			this->coordY = coordY;
+			this->coordZ = coordZ;
+		}
+
+		// getters
+		float GetXcomponent() { return coordX; }
+		float GetYcomponent() { return coordY; }
+		float GetZcomponent() { return coordZ; }
+		// setters
+		void SetXcomponent(float xValue) { this->coordX = xValue; }
+		void SetYcomponent(float yValue) { this->coordY = yValue; }
+		void SetZcomponent(float zValue) { this->coordZ = zValue; }
+
+		void PointInfo()
+		{
+			cout << "Point.X:\t" << GetXcomponent()
+				<< "\nPoint.Y:\t" << GetYcomponent()
+				<< "\nPoint.Z:\t" << GetZcomponent() << endl << endl;
+		}
+
+		float coordX;
+		float coordY;
+		float coordZ; 
+		//float dstnsBtwnYs = coordY + 15; // place this as Y components in points B and D
+	};
+
+	Polygon(Point pointA, Point pointB, Point pointC, Point pointD)
+	{
+		this->pointA = pointA;
+		this->pointB = pointB;
+		this->pointC = pointC;
+		this->pointD = pointD;
+	}
+
+	void PolygonVerticesInfo()
+	{
+		cout << "=====\tPOLYGON\t=====" << endl;
+		cout << "Point A" << endl;
+		pointA.PointInfo();
+		cout << "Point B" << endl;
+		pointB.PointInfo();
+		cout << "Point C" << endl;
+		pointC.PointInfo();
+		cout << "Point D" << endl;
+		pointD.PointInfo();
+
+	}
+
+	Point pointA;
+	Point pointB;
+	Point pointC;
+	Point pointD;
+};
+//Points::y = 10;
 
 int main()
 {
-	/*// reading wave height doc ==============================================================================
+	// reading wave height doc ==============================================================================
 	vector<float> waveHeight;
 	auto wave_iterator = waveHeight.begin();
 	fstream waveFile;
@@ -71,7 +117,7 @@ int main()
 	}
 
 	// waveHeight output (for TEST reasons only)
-	for (auto wave_iterator = waveHeight.begin(); wave_iterator != waveHeight.end(); wave_iterator++)
+	/*for (auto wave_iterator = waveHeight.begin(); wave_iterator != waveHeight.end(); wave_iterator++)
 	{
 		cout << *wave_iterator << endl;
 	}
@@ -81,44 +127,6 @@ int main()
 	wave_iterator++;
 	//advance(wave_iterator, 1);
 	cout << *wave_iterator << endl;*/
-
-	// CREATE VERTICES VECTOR ===============================================================================
-	// variables to fill verticesContainer
-	vector<float> verticesContainer;	// vector with all vertices
-	float x = 0;
-	float& x1 = x, & x2 = x;
-	float y1 = 16, y2 = y1 - 12;
-	float z = 0;
-	float& z1 = z, & z2 = z;
-	fstream waveFile;
-
-	waveFile.open("WaveHeight.txt", fstream::in);
-	if (!waveFile.is_open())
-	{
-		cout << "ERROR\tcouldn't open WaveHeight.txt" << endl;
-		return -1;
-	}
-
-	while (!waveFile.eof())
-	{
-		waveFile >> z;
-
-		verticesContainer.push_back(x1);	// x1
-		verticesContainer.push_back(y1);	// y1
-		verticesContainer.push_back(z1);	// z1
-
-		verticesContainer.push_back(x2);	// x2
-		verticesContainer.push_back(y2);	// y2
-		verticesContainer.push_back(z2);	// z2
-
-		x += 6;
-	}
-
-	//PrintVector(verticesContainer);
-
-	
-
-	// ==============================================================================
 
 	// initializing GLFW ====================================================================================
 	glfwInit();
@@ -146,17 +154,97 @@ int main()
 	}
 
 	// TEST FIELD +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
-	
+	const float Y_LENGTH = 15;
+	int timeMoment = 1;
+
+	wave_iterator = waveHeight.begin();
+	/*Polygon plg;
+	plg.SetVertices(wave_iterator);
+	plg.PrintValues();
+	cout << "===\n";
+	Polygon plg2;
+	plg2.SetVertices(wave_iterator);
+	plg2.PrintValues();
+	cout << "===\n";
+	Polygon plg3;
+	plg3.SetVertices(wave_iterator);
+	plg3.PrintValues();
+	cout << "===\n";
+
+	Polygon::Point::SetZcomponent(*wave_iterator);
+
+	Polygon::Point pointA;
+	pointA.SetXcomponent(timeMoment);
+	pointA.SetZcomponent(*wave_iterator);
+	//pointA.PointInfo();
+
+	Polygon::Point pointB;
+	pointB.SetXcomponent(timeMoment);
+	//pointB.SetYcomponent();
+	pointB.SetZcomponent(*wave_iterator);
+	//pointB.PointInfo();
+
+	Polygon::Point pointC;
+	pointC.SetXcomponent(timeMoment);
+	pointC.SetZcomponent(*wave_iterator);
+	//pointC.PointInfo();
+
+	Polygon::Point pointD;
+	pointD.SetXcomponent(timeMoment);
+	pointD.SetZcomponent(*wave_iterator);
+	//pointD.PointInfo();
+
+	Polygon plg(pointA, pointB, pointC, pointD);
+	plg.PolygonVerticesInfo();*/
 
 	
 
 	// TEST FIELD -----------------------------------------------------------------------------------------------------
-	
-	// shader program compiling and linking
+
+	// creating square (2 triangles)
+	float polygonVertices[] = {
+		 0.0f,  0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f
+	};
+	float polygonIndicies[] = {
+		0, 1, 2,
+		0, 2, 3,
+		4, 0, 3,
+		4, 3, 5,
+		5, 6, 2,
+		5, 2, 3
+	};
+
 	Shader myShader("myVertexShader.vs", "myFragmentShader.fs");
 
-	// creating mesh (10 triangles in NDC)
+	//float testSquareVertices[] = {
+	//	// position			// color			// indicies of vertices
+	//	-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,	// A - 0
+	//	-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,	// B - 1
+	//	 0.0f,  0.5f, 0.0f,	0.0f, 0.0f, 1.0f,	// C - 2
+	//	 0.0f, -0.5f, 0.0f,	1.0f, 1.0f, 0.0f,	// D - 3
+	//	 0.5f,  0.5f, 0.0f,	0.0f, 1.0f, 1.0f,	// E - 4
+	//	 0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 1.0f	// F - 5
+	//};
+
+	float testSquareVertices[] = {
+		// position			// indicies of vertices
+		-0.5f,  0.5f, 0.0f,	// A - 0 
+		-0.5f, -0.5f, 0.0f,	// B - 1
+		 0.0f,  0.5f, 0.0f, // C - 2
+		 0.0f, -0.5f, 0.0f,	// D - 3
+		 0.5f,  0.5f, 0.0f, // E - 4
+		 0.5f, -0.5f, 0.0f	// F - 5
+	};
+
+	unsigned int testSquareIndicies[] = {
+		0, 1, 3,	// triangle ABD
+		0, 3, 2,	// triangle ADC
+		2, 3, 5,	// triangle CDF
+		2, 5, 4		// triangle CFE
+	};
+
 	float test2SquareVertices[] = {
 		// position			// indicies of vertices
 		-1.0f,  0.6f, 0.0f,	// A - 0 
@@ -206,31 +294,23 @@ int main()
 		18, 21, 20	// triangle SVU
 	};
 	
-	// basic triangle
-	float goodOldTriangle[] = {
-		-0.5f, -0.5f, 0.0f,	// A
-		 0.0f,  0.5f, 0.0f,	// B
-		 0.5f, -0.5f, 0.0f	// C
-	};
-
 	unsigned int VAO, VBO, EBO;
 
 	// create and bind VAO
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	//glGenBuffers(1, &EBO);
+	glGenBuffers(1, &EBO);
 	
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	 //allocate memory in GPU and copy there data from testSquareVertices array
-	glBufferData(GL_ARRAY_BUFFER, sizeof(goodOldTriangle), goodOldTriangle, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, verticesContainer.size(), &verticesContainer[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(test2SquareVertices), test2SquareVertices, GL_STATIC_DRAW);
 
 	
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//// allocate memory in GPU and copy there data from testSquareIndicies array
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(test2SquareIndicies), test2SquareIndicies, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	// allocate memory in GPU and copy there data from testSquareIndicies array
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(test2SquareIndicies), test2SquareIndicies, GL_STATIC_DRAW);
 
 	// finding attribs
 	/*unsigned int posAttrib = glGetAttribLocation(static Shader::ID, "vertexPosition");
@@ -246,16 +326,9 @@ int main()
 	
 	
 	// uncomment this call to draw in wireframe polygons.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//myShader.Use();
-
-	/*glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-	
-	
-	vec = transform * vec;*/
-	
-	//cout << vec.x << vec.y << vec.z << endl;
 
 	// render loop ==========================================================================================
 	while (!glfwWindowShouldClose(window))
@@ -267,73 +340,12 @@ int main()
 		//glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// transformations
-
-		// CAMERA
-		// position
-		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
-		// direction	(positive z-axis)
-		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);	// scene origin
-		glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
-		// right		(positive x-axis)
-		glm::vec3 up = glm::vec3(0.0f, 0.1f, 0.0f);
-		glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-		// up			(positive y-axis)
-		glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
-
-		const float radius = 10.0f;
-		float camX = sin(glfwGetTime()) * radius;
-		float camZ = cos(glfwGetTime()) * radius;
-
-		glm::mat4 view = glm::lookAt(
-			glm::vec3(camX, 0.0f, camZ),	// position
-			glm::vec3(0.0f, 0.0f, 3.0f),	// target
-			glm::vec3(0.0f, 0.0f, 3.0f));	// up vector
-
-
-		glm::mat4 transform = glm::mat4(1.0f); // identity matrix
-		glm::vec4 translation = glm::vec4() + 0.1f * (float)glfwGetTime();
-		//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(1.0, 1.0, 1.0));
-		transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
-		//transform = glm::translate(transform, glm::vec3(0.15f, 0.15f, 0.0f));
-		transform = glm::translate(transform, glm::vec3(0.1f, 0.0f, 0.0f) * ((float)glfwGetTime() /** 0.25f*/));
-
-		// get matrix's uniform location and set matrix
+		// render
 		myShader.Use();
-		unsigned int transformLoc = glGetUniformLocation(myShader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-
-
-		// create transformation matrices
-		// model matrix (to transform vertex local coords to world coords)
-		// view matrix
-		// projection matrix (perspective)
-		/*glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view =		glm::mat4(1.0f);
-		glm::mat4 projection =	glm::mat4(1.0f);
-		model = glm::rotate(model, glm::radians(-55.f), glm::vec3(1.0f, 0.0f, 0.0f));	
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));		
-		projection = glm::perspective(glm::radians(45.0f), (float)START_WINDOW_WIDTH / (float)START_WINDOW_HEIGHT, 0.1f, 100.f);
-
-		// retrieve matrix uniform locations
-		unsigned int modelLoc = glGetUniformLocation(myShader.ID, "model");
-		unsigned int viewLoc = glGetUniformLocation(myShader.ID, "view");		
-		//unsigned int projectionLoc = glGetUniformLocation(myShader.ID, "projection");
-		
-		// pass them to shaders
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
-		//glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-		//myShader.setMat4(projection, "projection");*/
-
-
 		glBindVertexArray(VAO);
 		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0); // for 4 triangles
-		//glDrawElements(GL_TRIANGLES, 60, GL_UNSIGNED_INT, 0); // for 4 triangles
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glBindVertexArray(0);
+		glDrawElements(GL_TRIANGLES, 60, GL_UNSIGNED_INT, 0); // for 4 triangles
+		glBindVertexArray(0);
 
 		// swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
@@ -355,3 +367,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
+void drawPolgyon()
+{
+
+}
