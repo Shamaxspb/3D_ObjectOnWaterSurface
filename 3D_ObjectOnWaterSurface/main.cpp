@@ -19,7 +19,6 @@ using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-void drawPolgyon();
 
 template <typename T>
 void PrintVector(const vector<T>& vec)
@@ -93,7 +92,7 @@ int main()
 	float& z1 = z, & z2 = z;
 	fstream waveFile;
 
-	waveFile.open("D:/Programming/Projects/Diploma/3D_ObjectOnWaterSurface/3D_ObjectOnWaterSurface/WaveHeight.txt", fstream::in);
+	waveFile.open("WaveHeight.txt", fstream::in);
 	if (!waveFile.is_open())
 	{
 		cout << "ERROR\tcouldn't open WaveHeight.txt" << endl;
@@ -115,7 +114,9 @@ int main()
 		x += 6;
 	}
 
-	PrintVector(verticesContainer);
+	//PrintVector(verticesContainer);
+
+	
 
 	// ==============================================================================
 
@@ -146,6 +147,10 @@ int main()
 
 	// TEST FIELD +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
+	
+
+	
+
 	// TEST FIELD -----------------------------------------------------------------------------------------------------
 	
 	// shader program compiling and linking
@@ -213,18 +218,19 @@ int main()
 	// create and bind VAO
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	//glGenBuffers(1, &EBO);
 	
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	 //allocate memory in GPU and copy there data from testSquareVertices array
-	glBufferData(GL_ARRAY_BUFFER, sizeof(test2SquareVertices), test2SquareVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(goodOldTriangle), goodOldTriangle, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, verticesContainer.size(), &verticesContainer[0], GL_STATIC_DRAW);
 
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// allocate memory in GPU and copy there data from testSquareIndicies array
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(test2SquareIndicies), test2SquareIndicies, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//// allocate memory in GPU and copy there data from testSquareIndicies array
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(test2SquareIndicies), test2SquareIndicies, GL_STATIC_DRAW);
 
 	// finding attribs
 	/*unsigned int posAttrib = glGetAttribLocation(static Shader::ID, "vertexPosition");
@@ -240,9 +246,16 @@ int main()
 	
 	
 	// uncomment this call to draw in wireframe polygons.
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//myShader.Use();
+
+	/*glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+	
+	
+	vec = transform * vec;*/
+	
+	//cout << vec.x << vec.y << vec.z << endl;
 
 	// render loop ==========================================================================================
 	while (!glfwWindowShouldClose(window))
@@ -254,8 +267,44 @@ int main()
 		//glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// activate shader
+		// transformations
+
+		// CAMERA
+		// position
+		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+		// direction	(positive z-axis)
+		glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);	// scene origin
+		glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
+		// right		(positive x-axis)
+		glm::vec3 up = glm::vec3(0.0f, 0.1f, 0.0f);
+		glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+		// up			(positive y-axis)
+		glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, cameraDirection));
+
+		const float radius = 10.0f;
+		float camX = sin(glfwGetTime()) * radius;
+		float camZ = cos(glfwGetTime()) * radius;
+
+		glm::mat4 view = glm::lookAt(
+			glm::vec3(camX, 0.0f, camZ),	// position
+			glm::vec3(0.0f, 0.0f, 3.0f),	// target
+			glm::vec3(0.0f, 0.0f, 3.0f));	// up vector
+
+
+		glm::mat4 transform = glm::mat4(1.0f); // identity matrix
+		glm::vec4 translation = glm::vec4() + 0.1f * (float)glfwGetTime();
+		//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(1.0, 1.0, 1.0));
+		transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
+		//transform = glm::translate(transform, glm::vec3(0.15f, 0.15f, 0.0f));
+		transform = glm::translate(transform, glm::vec3(0.1f, 0.0f, 0.0f) * ((float)glfwGetTime() /** 0.25f*/));
+
+		// get matrix's uniform location and set matrix
 		myShader.Use();
+		unsigned int transformLoc = glGetUniformLocation(myShader.ID, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+
 
 		// create transformation matrices
 		// model matrix (to transform vertex local coords to world coords)
@@ -282,7 +331,8 @@ int main()
 
 		glBindVertexArray(VAO);
 		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0); // for 4 triangles
-		glDrawElements(GL_TRIANGLES, 60, GL_UNSIGNED_INT, 0); // for 4 triangles
+		//glDrawElements(GL_TRIANGLES, 60, GL_UNSIGNED_INT, 0); // for 4 triangles
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glBindVertexArray(0);
 
 		// swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -305,7 +355,3 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void drawPolgyon()
-{
-
-}
