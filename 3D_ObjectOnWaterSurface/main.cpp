@@ -128,6 +128,45 @@ int main()
 	//advance(wave_iterator, 1);
 	cout << *wave_iterator << endl;*/
 
+<<<<<<< ActualToMerge
+
+	// CREATE VERTICES VECTOR ===============================================================================
+	// variables to fill verticesContainer
+	vector<float> verticesContainer;	// vector with all vertices
+	float x = 0;
+	float& x1 = x, & x2 = x;
+	float y1 = 16, y2 = y1 - 12;
+	float z = 0;
+	float& z1 = z, & z2 = z;
+	fstream waveFile;
+
+	waveFile.open("WaveHeight.txt", fstream::in);
+	if (!waveFile.is_open())
+	{
+		cout << "ERROR\tcouldn't open WaveHeight.txt" << endl;
+		return -1;
+	}
+
+	while (!waveFile.eof())
+	{
+		waveFile >> z;
+
+		verticesContainer.push_back(x1);	// x1
+		verticesContainer.push_back(y1);	// y1
+		verticesContainer.push_back(z1);	// z1
+
+		verticesContainer.push_back(x2);	// x2
+		verticesContainer.push_back(y2);	// y2
+		verticesContainer.push_back(z2);	// z2
+
+		x += 6;
+	}
+
+	PrintVector(verticesContainer);
+
+	// ==============================================================================
+
+>>>>>>> master
 	// initializing GLFW ====================================================================================
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
